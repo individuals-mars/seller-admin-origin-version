@@ -23,6 +23,7 @@ import DrafProduct from './pages/DrafProduct.jsx';
 import LowProducts from './pages/LowProducts.jsx';
 import Analytics from './pages/Analytics.jsx';
 import Reviews from './pages/Reviews.jsx';
+import OrderInfo from './pages/OrderInfo.jsx';
 
 
 
@@ -42,7 +43,10 @@ const router = createBrowserRouter([
       { path: '/drafproduct', element: <DrafProduct /> },
       { path: '/lowproduct', element: <LowProducts /> },
       {path: '/analytics', element: <Analytics />},
-      {path: '/reviews', element: <Reviews />}
+      {path: '/reviews', element: <Reviews />},
+      {path: '/order/:id', element: <OrderInfo />}
+
+
 
     ]
   },
