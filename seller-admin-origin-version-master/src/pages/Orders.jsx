@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import LoadingTemplate from '../components/LoadingTemplate';
 
 const Orders = () => {
-  const apiUrl = 'https://abdulaziz-test.onrender.com/api/orders';
+  const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/orders`;
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,6 +20,8 @@ const Orders = () => {
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
+      console.log(data);
+      
       const fetchedOrders = data.data || data || [];
       setOrders(fetchedOrders);
       setFilteredOrders(fetchedOrders);
@@ -35,15 +37,14 @@ const Orders = () => {
   }, []);
 
   const handleSearch = (e) => {
-    if (e.key === 'Enter') {
       const lowerQuery = searchQuery.toLowerCase();
       const filtered = orders.filter(order =>
         order.customer?.username?.toLowerCase().includes(lowerQuery)
       );
       setFilteredOrders(filtered);
-    }
   };
 
+  
   return (
     <ContainerTemplate>
       <div>
@@ -83,7 +84,7 @@ const Orders = () => {
                   <th>City</th>
                   <th>Region</th>
                   <th>Street</th>
-                  <th>Payment</th>
+                  <th>Status</th>
                   <th>Details</th>
                 </tr>
               </thead>
