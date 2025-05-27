@@ -21,7 +21,6 @@ const Orders = () => {
       const response = await fetch(apiUrl);
       const data = await response.json();
       console.log(data);
-      
       const fetchedOrders = data.data || data || [];
       setOrders(fetchedOrders);
       setFilteredOrders(fetchedOrders);
@@ -37,21 +36,21 @@ const Orders = () => {
   }, []);
 
   const handleSearch = (e) => {
-      const lowerQuery = searchQuery.toLowerCase();
-      const filtered = orders.filter(order =>
-        order.customer?.username?.toLowerCase().includes(lowerQuery)
-      );
-      setFilteredOrders(filtered);
+    const lowerQuery = searchQuery.toLowerCase();
+    const filtered = orders.filter(order =>
+      order.customer?.username?.toLowerCase().includes(lowerQuery)
+    );
+    setFilteredOrders(filtered);
   };
 
-  
+
   return (
     <ContainerTemplate>
       <div>
         <div className='flex justify-between items-center'>
           <div className='bg-base-100 border-2 border-base-300 flex justify-between px-2 py-8 w-full rounded-2xl items-center'>
             <p className='text-2xl font-bold text-base-content'><span className='text-success'>|</span> Orders</p>
-            <label className="input w-[40%] h-10 input-primary">
+            <label className="input w-[40%] h-10 input-primary mt-4">
               <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor">
                   <circle cx="11" cy="11" r="8"></circle>
@@ -95,13 +94,11 @@ const Orders = () => {
                   <tr>
                     <td colSpan="10" className="text-center">
                       <div className='flex items-center justify-center flex-col '>
-                        <img src={`../../public/notfound.png`} alt="" sizes={10}/>
+                        <img src={`../../public/notfound.png`} alt="" sizes={10} />
 
                         <p className=' text-2xl'>No data found</p>
-                        <p className='text-xs'>Sorry we couldn’t found any data
-
-</p>
-                        </div></td>
+                        <p className='text-xs'>Sorry we couldn’t found any dat</p>
+                      </div></td>
                   </tr>
                 ) : (
                   filteredOrders.map((order, index) => {
@@ -117,7 +114,7 @@ const Orders = () => {
                         <td>{location.city || "Mavjud emas"}</td>
                         <td>{location.region || "Mavjud emas"}</td>
                         <td>{location.street || "Mavjud emas"}</td>
-                        <td className='text-success rounded-full'><span className='bg-base-300 text-success font-semibold p-1 rounded-full'>{order.paymentStatus || "Mavjud emas"}</span> </td>
+                        <td className='text-success rounded-full'><span className='bg-base-300 text-success relative right-2 font-semibold p-2 rounded-full'>{order.paymentStatus || "Mavjud emas"}</span> </td>
                         <td>
                           <button
                             onClick={() => navigate(`/order/${order._id}`)}
