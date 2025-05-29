@@ -6,14 +6,17 @@ import { IoEyeOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import LoadingTemplate from '../components/LoadingTemplate';
 import { useDispatch } from 'react-redux';
-import { setOrders } from '../store/orderSlice'; 
+import { setOrders } from '../store/orderSlice';
+import { FaAngleDown, FaAngleUp } from "react-icons/fa";
+
 
 const Orders = () => {
   const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/orders`;
-  const [orders, setOrdersLocal] = useState([]); 
+  const [orders, setOrdersLocal] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  const [sortOrder, setSortOrder] = useState('asc');
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -27,7 +30,7 @@ const Orders = () => {
       const fetchedOrders = data.data || data || [];
       setOrdersLocal(fetchedOrders);
       setFilteredOrders(fetchedOrders);
-      dispatch(setOrders(fetchedOrders)); 
+      dispatch(setOrders(fetchedOrders));
     } catch (error) {
       toast.error("Xatolik yuz berdi!");
     } finally {
@@ -38,6 +41,19 @@ const Orders = () => {
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  const handleSortByAge = () => {
+    const sorted = [...filteredOrders].sort((a, b) => {
+      const ageA = a.customer?.age || 0;
+      const ageB = b.customer?.age || 0;
+
+      return sortOrder === 'asc' ? ageA - ageB : ageB - ageA;
+    });
+
+    setFilteredOrders(sorted);
+    setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
+  };
+
 
   const handleSearch = (e) => {
     const lowerQuery = searchQuery.toLowerCase();
@@ -81,7 +97,13 @@ const Orders = () => {
                   <th>#</th>
                   <th>Name</th>
                   <th>Phone</th>
-                  <th>Age</th>
+                  <th
+                    className="cursor-pointer items-center gap-2 flex"
+                    onClick={handleSortByAge}
+                  >
+                    Age
+                    {sortOrder === 'asc' ? <FaAngleUp className='text-success'/>: <FaAngleDown className='text-error' />}
+                  </th>
                   <th>Gender</th>
                   <th>City</th>
                   <th>Region</th>

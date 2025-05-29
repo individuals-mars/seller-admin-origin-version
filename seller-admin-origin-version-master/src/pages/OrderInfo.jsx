@@ -20,8 +20,7 @@ const OrderInfo = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [activeStep, setActiveStep] = useState(4);
-
-  const ordersInfo = useSelector(state => state)
+  const ordersInfo = useSelector(state => state.order.list)
   console.log("Debug ordersInfo:", ordersInfo);
   
 
