@@ -17,6 +17,7 @@ const Orders = () => {
   const [loading, setLoading] = useState(false);
   const [sortOrderByStatus, setSortOrderByStatus] = useState('asc');
   const [sortOrderByAge, setSortOrderByAge] = useState('asc');
+  const [sortOrderByGender, setSortOrderByGender] = useState('asc');
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -72,7 +73,6 @@ const Orders = () => {
     setSortOrderByAge(prev => (prev === 'asc' ? 'desc' : 'asc'));
   };
 
-  const [sortOrderByGender, setSortOrderByGender] = useState('asc');
 
   const handleSortByGender = () => {
     const sorted = [...filteredOrders].sort((a, b) => {
