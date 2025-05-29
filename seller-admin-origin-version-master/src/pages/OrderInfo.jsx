@@ -6,6 +6,7 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import ContainerTemplate from '../components/ContainerTemplate';
+import { useSelector } from 'react-redux';
 
 const steps = [
   'Order Pending',
@@ -19,6 +20,10 @@ const OrderInfo = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [activeStep, setActiveStep] = useState(4);
+
+  const ordersInfo = useSelector(state => state)
+  console.log("Debug ordersInfo:", ordersInfo);
+  
 
   useEffect(() => {
     const timer = setTimeout(() => {

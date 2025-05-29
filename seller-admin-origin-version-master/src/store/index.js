@@ -4,13 +4,13 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // localStorage uchun
 import userReducer from './userSlice';
 import themeReducer from './themeSlice';
-import orderReducer from './orderSlice'; // Yangi order reducer
+import orderReducer from './orderSlice'; 
 
 // Root reducer yaratamiz
 const rootReducer = combineReducers({
   user: userReducer,
   theme: themeReducer,
-  order: orderReducer, // Order reducer qo'shildi
+  order: orderReducer, 
 });
 
 // Persist konfiguratsiya

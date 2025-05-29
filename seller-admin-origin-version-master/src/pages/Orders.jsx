@@ -5,15 +5,18 @@ import { toast } from 'react-toastify';
 import { IoEyeOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import LoadingTemplate from '../components/LoadingTemplate';
+import { useDispatch } from 'react-redux';
+import { setOrders } from '../store/orderSlice'; 
 
 const Orders = () => {
   const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/orders`;
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrdersLocal] = useState([]); 
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -22,8 +25,9 @@ const Orders = () => {
       const data = await response.json();
       console.log(data);
       const fetchedOrders = data.data || data || [];
-      setOrders(fetchedOrders);
+      setOrdersLocal(fetchedOrders);
       setFilteredOrders(fetchedOrders);
+      dispatch(setOrders(fetchedOrders)); 
     } catch (error) {
       toast.error("Xatolik yuz berdi!");
     } finally {
@@ -42,7 +46,6 @@ const Orders = () => {
     );
     setFilteredOrders(filtered);
   };
-
 
   return (
     <ContainerTemplate>
@@ -95,10 +98,10 @@ const Orders = () => {
                     <td colSpan="10" className="text-center">
                       <div className='flex items-center justify-center flex-col '>
                         <img src={`../../public/notfound.png`} alt="" sizes={10} />
-
                         <p className=' text-2xl'>No data found</p>
-                        <p className='text-xs'>Sorry we couldn’t found any dat</p>
-                      </div></td>
+                        <p className='text-xs'>Sorry we couldn’t found any data</p>
+                      </div>
+                    </td>
                   </tr>
                 ) : (
                   filteredOrders.map((order, index) => {
@@ -114,7 +117,11 @@ const Orders = () => {
                         <td>{location.city || "Mavjud emas"}</td>
                         <td>{location.region || "Mavjud emas"}</td>
                         <td>{location.street || "Mavjud emas"}</td>
-                        <td className='text-success rounded-full'><span className='bg-base-300 text-success relative right-2 font-semibold p-2 rounded-full'>{order.paymentStatus || "Mavjud emas"}</span> </td>
+                        <td className='text-success rounded-full'>
+                          <span className='bg-base-300 text-success relative right-2 font-semibold p-2 rounded-full'>
+                            {order.paymentStatus || "Mavjud emas"}
+                          </span>
+                        </td>
                         <td>
                           <button
                             onClick={() => navigate(`/order/${order._id}`)}
