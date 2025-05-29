@@ -7,8 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import LoadingTemplate from '../components/LoadingTemplate';
 import { useDispatch } from 'react-redux';
 import { setOrders } from '../store/orderSlice';
-import { FaAngleDown, FaAngleUp } from "react-icons/fa";
-
+import { FiRepeat } from "react-icons/fi";
 
 const Orders = () => {
   const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/orders`;
@@ -16,8 +15,8 @@ const Orders = () => {
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sortOrder, setSortOrder] = useState('asc');
-
+  const [sortOrderByStatus, setSortOrderByStatus] = useState('asc');
+  const [sortOrderByAge, setSortOrderByAge] = useState('asc');
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -26,7 +25,6 @@ const Orders = () => {
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
-      console.log(data);
       const fetchedOrders = data.data || data || [];
       setOrdersLocal(fetchedOrders);
       setFilteredOrders(fetchedOrders);
@@ -42,20 +40,7 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
-  const handleSortByAge = () => {
-    const sorted = [...filteredOrders].sort((a, b) => {
-      const ageA = a.customer?.age || 0;
-      const ageB = b.customer?.age || 0;
-
-      return sortOrder === 'asc' ? ageA - ageB : ageB - ageA;
-    });
-
-    setFilteredOrders(sorted);
-    setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
-  };
-
-
-  const handleSearch = (e) => {
+  const handleSearch = () => {
     const lowerQuery = searchQuery.toLowerCase();
     const filtered = orders.filter(order =>
       order.customer?.username?.toLowerCase().includes(lowerQuery)
@@ -63,12 +48,56 @@ const Orders = () => {
     setFilteredOrders(filtered);
   };
 
+  const handleSortByStatus = () => {
+    const sorted = [...filteredOrders].sort((a, b) => {
+      const statusA = a.paymentStatus || '';
+      const statusB = b.paymentStatus || '';
+      return sortOrderByStatus === 'asc'
+        ? statusA.localeCompare(statusB)
+        : statusB.localeCompare(statusA);
+    });
+
+    setFilteredOrders(sorted);
+    setSortOrderByStatus(prev => (prev === 'asc' ? 'desc' : 'asc'));
+  };
+
+  const handleSortByAge = () => {
+    const sorted = [...filteredOrders].sort((a, b) => {
+      const ageA = a.customer?.age || 0;
+      const ageB = b.customer?.age || 0;
+      return sortOrderByAge === 'asc' ? ageA - ageB : ageB - ageA;
+    });
+
+    setFilteredOrders(sorted);
+    setSortOrderByAge(prev => (prev === 'asc' ? 'desc' : 'asc'));
+  };
+
+  const [sortOrderByGender, setSortOrderByGender] = useState('asc');
+
+  const handleSortByGender = () => {
+    const sorted = [...filteredOrders].sort((a, b) => {
+      const genderA = a.customer?.gender?.toLowerCase() || '';
+      const genderB = b.customer?.gender?.toLowerCase() || '';
+      return sortOrderByGender === 'asc'
+        ? genderA.localeCompare(genderB)
+        : genderB.localeCompare(genderA);
+    });
+  
+    setFilteredOrders(sorted);
+    setSortOrderByGender(prev => (prev === 'asc' ? 'desc' : 'asc'));
+  };
+  
+
   return (
     <ContainerTemplate>
       <div>
         <div className='flex justify-between items-center'>
           <div className='bg-base-100 border-2 border-base-300 flex justify-between px-2 py-8 w-full rounded-2xl items-center'>
-            <p className='text-2xl font-bold text-base-content'><span className='text-success'>|</span> Orders</p>
+            <p className='text-2xl font-bold text-base-content'>
+              <span className='text-success'>|</span> Orders
+            </p>
+
+            {/* Search Input */}
             <label className="input w-[40%] h-10 input-primary mt-4">
               <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor">
@@ -78,17 +107,32 @@ const Orders = () => {
               </svg>
               <input
                 type="search"
-                required
                 placeholder="Search orders..."
                 className='w-[150%]'
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleSearch}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSearch();
+                }}
               />
             </label>
+
+            {/* Dropdown Filter */}
+            <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="btn m-1 items-center text-base-content border-2 border-info">
+                <FiRepeat />
+                Change status
+              </div>
+              <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                <li><button onClick={handleSortByAge}>Sort by Age</button></li>
+                <li><button onClick={handleSortByStatus}>Sort by Status</button></li>
+                <li><button onClick={handleSortByGender}>Sort by Gender</button></li>
+              </ul>
+            </div>
           </div>
         </div>
 
+        {/* Table */}
         <div className='mt-8 border-2 border-base-300 rounded-2xl bg-base-100'>
           <div className="overflow-x-auto">
             <table className="table">
@@ -97,18 +141,12 @@ const Orders = () => {
                   <th>#</th>
                   <th>Name</th>
                   <th>Phone</th>
-                  <th
-                    className="cursor-pointer items-center gap-2 flex"
-                    onClick={handleSortByAge}
-                  >
-                    Age
-                    {sortOrder === 'asc' ? <FaAngleUp className='text-success'/>: <FaAngleDown className='text-error' />}
-                  </th>
-                  <th>Gender</th>
+                  <th className="cursor-pointer" onClick={handleSortByAge}>Age</th>
+                  <th className='cursor-pointer' onClick={handleSortByGender}>Gender</th>
                   <th>City</th>
                   <th>Region</th>
                   <th>Street</th>
-                  <th>Status</th>
+                  <th className="cursor-pointer" onClick={handleSortByStatus}>Status</th>
                   <th>Details</th>
                 </tr>
               </thead>
@@ -119,9 +157,9 @@ const Orders = () => {
                   <tr>
                     <td colSpan="10" className="text-center">
                       <div className='flex items-center justify-center flex-col '>
-                        <img src={`../../public/notfound.png`} alt="" sizes={10} />
+                        <img src={`/notfound.png`} alt="Not Found" className="w-40" />
                         <p className=' text-2xl'>No data found</p>
-                        <p className='text-xs'>Sorry we couldn’t found any data</p>
+                        <p className='text-xs'>Sorry we couldn’t find any data</p>
                       </div>
                     </td>
                   </tr>
@@ -139,7 +177,7 @@ const Orders = () => {
                         <td>{location.city || "Mavjud emas"}</td>
                         <td>{location.region || "Mavjud emas"}</td>
                         <td>{location.street || "Mavjud emas"}</td>
-                        <td className='text-success rounded-full'>
+                        <td>
                           <span className='bg-base-300 text-success relative right-2 font-semibold p-2 rounded-full'>
                             {order.paymentStatus || "Mavjud emas"}
                           </span>
