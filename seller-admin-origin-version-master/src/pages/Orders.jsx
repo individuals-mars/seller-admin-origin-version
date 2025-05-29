@@ -82,10 +82,16 @@ const Orders = () => {
         ? genderA.localeCompare(genderB)
         : genderB.localeCompare(genderA);
     });
-  
+
     setFilteredOrders(sorted);
     setSortOrderByGender(prev => (prev === 'asc' ? 'desc' : 'asc'));
   };
+
+  const SelectOrderDetail = (data) => {
+    console.log("SARDORGEY:", data)
+    dispatch(setOrders(data))
+    navigate(`/order/${data._id}`)
+  }
   
 
   return (
@@ -97,8 +103,7 @@ const Orders = () => {
               <span className='text-success'>|</span> Orders
             </p>
 
-            {/* Search Input */}
-            <label className="input w-[40%] h-10 input-primary mt-4">
+            <label className="input w-[70%]  input-primary">
               <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor">
                   <circle cx="11" cy="11" r="8"></circle>
@@ -108,7 +113,6 @@ const Orders = () => {
               <input
                 type="search"
                 placeholder="Search orders..."
-                className='w-[150%]'
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => {
@@ -117,7 +121,6 @@ const Orders = () => {
               />
             </label>
 
-            {/* Dropdown Filter */}
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn m-1 items-center text-base-content border-2 border-info">
                 <FiRepeat />
@@ -157,7 +160,7 @@ const Orders = () => {
                   <tr>
                     <td colSpan="10" className="text-center">
                       <div className='flex items-center justify-center flex-col '>
-                        <img src={`/notfound.png`} alt="Not Found" className="w-40" />
+                        <img src={`/ notfound.png`} alt="Not Found" className="w-40" />
                         <p className=' text-2xl'>No data found</p>
                         <p className='text-xs'>Sorry we couldn’t find any data</p>
                       </div>
@@ -184,7 +187,7 @@ const Orders = () => {
                         </td>
                         <td>
                           <button
-                            onClick={() => navigate(`/order/${order._id}`)}
+                            onClick={() => SelectOrderDetail(order)}
                             className='btn btn-success'
                           >
                             <IoEyeOutline />
@@ -200,7 +203,7 @@ const Orders = () => {
         </div>
       </div>
     </ContainerTemplate>
-  );
+)
 };
 
 export default Orders;

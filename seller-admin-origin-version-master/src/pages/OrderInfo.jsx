@@ -20,9 +20,8 @@ const OrderInfo = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [activeStep, setActiveStep] = useState(4);
-  const ordersInfo = useSelector(state => state.order.list)
+  const ordersInfo = useSelector(state => state.order?.selectedOrder)
   console.log("Debug ordersInfo:", ordersInfo);
-  
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -40,31 +39,15 @@ const OrderInfo = () => {
   }
   const OrderInfo = [
     {
-      title: "Order Details",
+      title: `${ordersInfo.customer}`,
       content: [
         "1 Item",
         "Express Delivery",
         "Payment Method: STRIPE"
       ]
-    },
-    {
-      title: "Billing Address",
-      content: [
-        "Customer",
-        "2231 Kidd Avenue, Kipnuk, AK, 99614, United States",
-        "+1 9365141641631"
-      ]
-    },
-    {
-      title: "Shipping Address",
-      content: [
-        "Customer",
-        "2148 Straford Park, Winchester, KY, 40391, United States",
-        "+1 9365141641631"
-      ]
     }
   ];
-  
+
 
   return (
     <ContainerTemplate>
@@ -88,12 +71,12 @@ const OrderInfo = () => {
           </div>
           <div className='flex  items-center justify-between  '>
             <div className='flex items-center justify-between '>
-              <p className='text-xl font-medium f'>Order ID - {id}</p>
+              <p className=' text-nowrap font-medium f'>Order ID - {id}</p>
             </div>
             <div className='flex gap-4 w-[90%]'>
               <select
                 defaultValue="Pick a text editor"
-                className="select select-primary h-12  text-lg ml-auto"
+                className="select select-primary text-lg ml-auto select-sm"
               >
                 <option disabled={true}>Order processing</option>
                 <option>Order processing</option>
@@ -101,7 +84,7 @@ const OrderInfo = () => {
                 <option>Another VScode fork</option>
               </select>
               <div>
-                <button className='btn btn-success  h-12'>
+                <button className='btn btn-success btn-sm'>
                   Change Status
                 </button>
               </div>
@@ -194,20 +177,20 @@ const OrderInfo = () => {
           </div>
 
           <div className='flex items-start justify-between mt-10 gap-6'>
-  {OrderInfo.map((section, index) => (
-    
-    <div key={index} className='w-full max-w-xs'>
-      <p className='font-medium text-xl mb-2'>{section.title}</p>
-      <hr className='my-4 border-base-300' />
+            {OrderInfo.map((section, index) => (
 
-      <div className='space-y-1'>
-        {section.content.map((line, i) => (
-          <p key={i} className='text-sm text-base-content'>{line}</p>
-        ))}
-      </div>
-    </div>
-  ))}
-</div>
+              <div key={index} className='w-full max-w-xs'>
+                <p className='font-medium text-xl mb-2'>{section.title}</p>
+                <hr className='my-4 border-base-300' />
+
+                <div className='space-y-1'>
+                  {section.content.map((line, i) => (
+                    <p key={i} className='text-sm text-base-content'>{line}</p>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
 
 
         </div>
