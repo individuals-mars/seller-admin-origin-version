@@ -127,6 +127,7 @@ const OrderInfo = () => {
                   fontWeight: 500,
                 },
 
+
                 '& .MuiStepConnector-line': {
                   borderTopWidth: 4,
                   borderColor: '#10b981',
@@ -184,10 +185,8 @@ const OrderInfo = () => {
                   <p className='font-bold text-sm truncate'>Total</p>
                   <p className='font-bold text-sm'>$335.60</p>
                 </div>
-
               </div>
             </div>
-
           </div>
 
           <div className='flex items-start justify-between mt-10 gap-6'>
