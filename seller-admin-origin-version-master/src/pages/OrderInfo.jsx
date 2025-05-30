@@ -8,13 +8,6 @@ import StepLabel from '@mui/material/StepLabel';
 import ContainerTemplate from '../components/ContainerTemplate';
 import { useSelector } from 'react-redux';
 
-const steps = [
-  'Order Pending',
-  'Order Processing',
-  'Order At Local Facility',
-  'Order Out For Delivery',
-  'Order Completed'
-];
 
 // Helper to get active step index from status string
 const getStepIndex = (status) => {
@@ -40,9 +33,16 @@ const OrderInfo = () => {
   const [loading, setLoading] = useState(true);
   const ordersInfo = useSelector(state => state.order?.selectedOrder);
 
+
+  useEffect(() => {
+    if (ordersInfo) {
+      setLoading(false);
+    }
+  }, [ordersInfo]); // ✅ bu joy kodni to‘g‘ri ishlashini ta’minlaydi
+
   const activeStep = getStepIndex(ordersInfo?.status);
-
-
+  console.log(activeStep);
+  
 
   if (loading || !ordersInfo) {
     return (
@@ -51,6 +51,14 @@ const OrderInfo = () => {
       </div>
     );
   }
+
+  const steps = [
+    'Order Pending',
+    'Order Processing',
+    'Order At Local Facility',
+    'Order Out For Delivery',
+    'Order Completed'
+  ];
 
   const OrderInfoSection = [
     {

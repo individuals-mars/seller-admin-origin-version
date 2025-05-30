@@ -8,6 +8,11 @@ import LoadingTemplate from '../components/LoadingTemplate';
 import { useDispatch } from 'react-redux';
 import { setOrders } from '../store/orderSlice';
 import { FiRepeat } from "react-icons/fi";
+import { LuArrowBigUp, LuArrowBigDown } from "react-icons/lu";
+import { MdWorkHistory } from "react-icons/md";
+import { BsAwardFill } from "react-icons/bs";
+
+
 
 const Orders = () => {
   const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/orders`;
@@ -18,6 +23,8 @@ const Orders = () => {
   const [sortOrderByStatus, setSortOrderByStatus] = useState('asc');
   const [sortOrderByAge, setSortOrderByAge] = useState('asc');
   const [sortOrderByGender, setSortOrderByGender] = useState('asc');
+  const [lastSortedAge, setLastSortedAge] = useState(null);
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -69,10 +76,12 @@ const Orders = () => {
       return sortOrderByAge === 'asc' ? ageA - ageB : ageB - ageA;
     });
 
+    const firstSortedAge = sorted[0]?.customer?.age || 0;
+    setLastSortedAge(firstSortedAge);
+
     setFilteredOrders(sorted);
     setSortOrderByAge(prev => (prev === 'asc' ? 'desc' : 'asc'));
   };
-
 
   const handleSortByGender = () => {
     const sorted = [...filteredOrders].sort((a, b) => {
@@ -92,7 +101,6 @@ const Orders = () => {
     dispatch(setOrders(data))
     navigate(`/order/${data._id}`)
   }
-  
 
   return (
     <ContainerTemplate>
@@ -116,7 +124,7 @@ const Orders = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSearch();
+                  handleSearch();
                 }}
               />
             </label>
@@ -127,15 +135,25 @@ const Orders = () => {
                 Change status
               </div>
               <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                <li><button onClick={handleSortByAge}>Sort by Age</button></li>
-                <li><button onClick={handleSortByStatus}>Sort by Status</button></li>
-                <li><button onClick={handleSortByGender}>Sort by Gender</button></li>
+                <li>
+                  <button onClick={handleSortByAge} className="flex items-center gap-1">
+                    {sortOrderByAge === 'asc' ? (
+                      <LuArrowBigUp className="text-success" />
+                    ) : (
+                      <LuArrowBigDown className="text-error" />
+                    )}
+                    <span>Age</span>
+                  </button>
+                </li>
+                <li><button onClick={handleSortByStatus}> <MdWorkHistory className='text-warning' />
+                Sort by Status</button></li>
+                <li><button onClick={handleSortByGender}> <BsAwardFill className='text-info'/>
+                Sort by Gender</button></li>
               </ul>
             </div>
           </div>
         </div>
 
-        {/* Table */}
         <div className='mt-8 border-2 border-base-300 rounded-2xl bg-base-100'>
           <div className="overflow-x-auto">
             <table className="table">
@@ -160,7 +178,7 @@ const Orders = () => {
                   <tr>
                     <td colSpan="10" className="text-center">
                       <div className='flex items-center justify-center flex-col '>
-                        <img src={`/ notfound.png`} alt="Not Found" className="w-40" />
+                        <img src={`/notfound.png`} alt="Not Found" className="w-40" />
                         <p className=' text-2xl'>No data found</p>
                         <p className='text-xs'>Sorry we couldn’t find any data</p>
                       </div>
@@ -186,15 +204,12 @@ const Orders = () => {
                           </span>
                         </td>
                         <td>
-                          <button
-                            onClick={() => SelectOrderDetail(order)}
-                            className='btn btn-success'
-                          >
+                          <button className='btn btn-xs btn-outline' onClick={() => SelectOrderDetail(order)}>
                             <IoEyeOutline />
                           </button>
                         </td>
                       </tr>
-                    );
+                    )
                   })
                 )}
               </tbody>
@@ -203,7 +218,7 @@ const Orders = () => {
         </div>
       </div>
     </ContainerTemplate>
-)
+  );
 };
 
 export default Orders;
